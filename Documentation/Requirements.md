@@ -46,3 +46,6 @@ The document states that tickets may differ in price, validity, conditions of us
 
 Notification System and Subscriptions
 It is mentioned that passengers can subscribe to lines, stops, or trips, and that the system should notify affected passengers when something relevant changes. However, it does not specify the delivery channels for notifications (browser push notifications, email, SMS) nor the level of urgency/frequency with which they are sent.
+
+Disruption Handling and Consistency
+The text indicates that operational staff can register disruptions affecting lines, stops, or trips, and that temporary failures should not bring down the entire system. However, it does not detail how real-time schedule changes are propagated to passengers who have previously consulted the planned schedule.
