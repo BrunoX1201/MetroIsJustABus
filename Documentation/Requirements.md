@@ -38,3 +38,11 @@ Fault Tolerance, Resilience, and Consistency
 Temporary failures of individual parts of the system must not unnecessarily make the entire system unavailable.
 The system must handle communication failures, timeouts, etc.
 Communication failures must be handled without causing unintended effects, such as issuing the same ticket or recording the same validation
+
+# Identification of Ambiguities and Inconsistencies
+
+Ticket Management and Validation
+The document states that tickets may differ in price, validity, conditions of use, or number of permitted journeys, and that validation depends on the current state and previous validations. However, it does not specify how the system handles physical validation failures (a passenger trying to validate an expired or depleted ticket on a transport vehicle without physical turnstiles, or how integration with physical reader devices is handled).
+
+Notification System and Subscriptions
+It is mentioned that passengers can subscribe to lines, stops, or trips, and that the system should notify affected passengers when something relevant changes. However, it does not specify the delivery channels for notifications (browser push notifications, email, SMS) nor the level of urgency/frequency with which they are sent.
