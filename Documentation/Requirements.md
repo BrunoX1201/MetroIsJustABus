@@ -28,3 +28,13 @@ Price, validity period, specific conditions of use, or the number of trips they 
 Validation is mandatory. The decision of whether a ticket is valid for a specific use depends on multiple factors: the ticket type, its current status, the history of previous validations, and the timestamp when validation is attempted.
 
 # Non-Funcional
+
+System Architecture and Design
+The system must be implemented as a distributed, multi-component system.   
+It must include a passenger-facing web application.   
+The notification capability must be implemented across an independent application boundary. 
+
+Fault Tolerance, Resilience, and Consistency
+Temporary failures of individual parts of the system must not unnecessarily make the entire system unavailable.
+The system must handle communication failures, timeouts, etc.
+Communication failures must be handled without causing unintended effects, such as issuing the same ticket or recording the same validation
