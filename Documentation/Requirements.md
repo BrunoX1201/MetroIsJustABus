@@ -4,11 +4,11 @@
 
 **Entrega:** Milestone 1 — Requirements, 27 de outubro de 2026 (5%)
 
-**Versão:** 1.0, consolidada em 22 de outubro de 2026
+**Versão:** 1.1, revista em 24 de outubro de 2026
 
 **Referência:** enunciado v1.0 de 29 de setembro de 2026
 
-**Estado:** especificação inicial; pressupostos e decisões pendentes explícitos. Aprovação humana não presumida.
+**Estado:** especificação inicial revista documentalmente com assistência de IA; registo de revisão humana final a completar na secção 13.3 antes da submissão.
 
 ## 1. Objetivo e âmbito
 
@@ -27,11 +27,11 @@ O MetroIsJustABus suporta uma rede urbana de autocarros e os serviços dos seus 
 | B7 | Enunciado, pp. 1–3 e 10 | IA, validação, intervenção humana e métricas |
 | B8 | Enunciado, pp. 4–6; estrutura, p. 2 | Entregas, prazos, avaliação e organização |
 
-O PDF de referência, `Automated_Software_Development_Project_Complete.v1.0.pdf`, foi fornecido fora do repositório. As páginas B1–B8 são desse enunciado.
+Fonte primária: [enunciado v1.0](../Automated_Software_Development_Project_Complete.v1.0.pdf), de 29/09/2026. As referências B1–B8 identificam as páginas desse enunciado. A revisão documental de 24/10/2026 confrontou diretamente esta especificação com o PDF, incluindo os seis critérios da Milestone 1 na p. 4; não substitui a revisão humana registada na secção 13.3.
 
 Classificação: **E** — explícito no enunciado; **I** — inferência; **A** — pressuposto provisório; **D** — decisão de desenho/âmbito. Referenciar o enunciado não lhe atribui os mecanismos técnicos propostos. Os IDs FR-1 a FR-25 e NFR-1 a NFR-9 identificam os requisitos desta especificação. As propostas da equipa são justificadas neste documento. A ligação a implementação e testes executados será acrescentada quando existirem.
 
-## 3. Intervenientes e limites
+## 3. Intervenientes
 
 | Interveniente | Necessidades/responsabilidades |
 |---|---|
@@ -41,9 +41,9 @@ Classificação: **E** — explícito no enunciado; **I** — inferência; **A**
 | Equipa | Desenvolver, verificar, entregar e operar; supervisionar IA e recolher evidência |
 | Docente/avaliador | Esclarecer ambiguidades e avaliar sistema/processo |
 
-A prioridade proposta pela equipa é consulta; aquisição/validação; perturbações/ocupação; notificações; ferramentas operacionais. Não elimina requisitos obrigatórios. A correção dos direitos de utilização prevalece sobre otimizações.
+A prioridade proposta é consulta, aquisição/validação, perturbações/ocupação, notificações e ferramentas operacionais. Esta ordem não elimina requisitos obrigatórios; a correção dos direitos de utilização prevalece sobre otimizações.
 
-Decisões de âmbito desta especificação: uma rede/operador, web responsiva em português europeu, pagamento e validador simulados, dados fictícios. Não se prevê aplicação nativa, PWA offline, GPS, cancelas reais, planeamento multimodal, gestão de frota/manutenção/escalas, funções sociais ou faturação fiscal. São escolhas de âmbito, não proibições do enunciado.
+Como decisões de âmbito propostas (D), considera-se uma rede/operador, web responsiva em português europeu, pagamento e validador simulados e dados fictícios. Aplicação nativa, funcionamento offline, GPS, cancelas reais, planeamento multimodal, gestão de frota/manutenção/escalas, funções sociais e faturação fiscal ficam fora da proposta inicial. São escolhas de âmbito, não proibições do enunciado; A-01 a A-10 explicitam pressupostos e decisões associados.
 
 ## 4. Requisitos funcionais e rastreabilidade
 
@@ -95,7 +95,9 @@ As metas de disponibilidade e latência dependem da definição de carga e infra
 
 ## 6. Restrições de sistema e engenharia
 
-São obrigações explícitas do projeto completo, identificadas nesta milestone; não se declara a sua implementação concluída.
+São obrigações explícitas do projeto completo, identificadas nesta milestone; não se declara a sua implementação concluída. As restrições de engenharia são separadas das obrigações académicas de entrega. Os IDs existentes são preservados para manter a rastreabilidade.
+
+### 6.1. Restrições de sistema e engenharia
 
 | ID | Obrigação | Origem | Evidência/prazo |
 |---|---|---|---|
@@ -115,6 +117,13 @@ São obrigações explícitas do projeto completo, identificadas nesta milestone
 | SYS-AI-02 | Contexto/restrições, validação independente e intervenção humana. | B7 | Contexto e revisões desde M1. |
 | SYS-MEAS-01 | Recolher esforço, autonomia, intervenção, falhas, retrabalho, validação e CI/CD. | B7/B8 | Registos desde M1; análise final. |
 | SYS-TRACE-01 | Ligar requisitos, decisões, tarefas, verificações, código, artefactos e deployments. | B5/B8 | Origem M1; expandir até final. |
+
+### 6.2. Restrições do projeto académico e das entregas
+
+Estas obrigações regulam a entrega e a avaliação do projeto, sem constituírem funcionalidades do sistema. Os prazos de M1 (27/10/2026) e M2 (17/11/2026) constam de B8, p. 4; a entrega final ocorre em 11/12/2026.
+
+| ID | Obrigação | Origem | Evidência/prazo |
+|---|---|---|---|
 | SYS-REPORT-01 | Relatório do sistema/processo, evidências, métricas e contributos/esforço. | B8 | 11/12/2026. |
 | SYS-DEMO-01 | Vídeo de 10 minutos: passageiro, interações, cenários normais/falhas e versão em produção. | B8 | 11/12/2026. |
 | SYS-DELIVERY-01 | Código, modelos, scripts, configuração e documentação completos; sistema em produção. | B8 | 11/12/2026. |
@@ -126,32 +135,32 @@ São obrigações explícitas do projeto completo, identificadas nesta milestone
 
 | ID | Pressuposto/decisão | Base/estado | Impacto |
 |---|---|---|---|
-| A-01 | Consulta pública sem conta; autenticação para compra, carteira e subscrições/preferências. | Proposta da equipa; pressuposto | FR-1 a FR-4/11/19 a FR-23 |
-| A-02 | Validador simulado ligado ao sistema; retry da mesma operação, sem aceitação nova offline. | Proposta da equipa; base proposta | FR-13 a FR-15 |
-| A-03 | Ocupação é estimativa, não contagem física garantida. | Proposta da equipa; pressuposto | FR-17/18 |
-| A-04 | Sem GPS/feed externo obrigatório; pessoal introduz perturbações. | Proposta da equipa; âmbito | FR-6 a FR-9 |
-| A-05 | Pagamento simulado sem gateway real. | Decisão de âmbito; gateway real não assumido | FR-11/12 |
-| A-06 | Serviço independente entrega notificações; canal por escolher. | B2; proposta da equipa | FR-21/22 |
-| A-07 | Perfis base passageiro/pessoal; subperfis operator/admin são proposta a detalhar. | Proposta da equipa; segurança | FR-24; NFR-6 |
-| A-08 | Interface em português europeu e dados fictícios. | Proposta da equipa; produto | Interface, testes e privacidade |
-| A-09 | Calendários Europe/Lisbon; instantes UTC preservando fuso/calendário na geração de viagens. | Proposta da equipa e refinamento de desenho | Mudanças de hora sem offset fixo |
-| A-10 | Base por dia da semana; feriados/exceções com regra explícita. | B1; proposta da equipa; pressuposto | FR-2/3 |
+| A-01 | Consulta pública sem conta; autenticação para compra, carteira e subscrições/preferências. | A — pressuposto provisório | FR-1 a FR-4/11/19 a FR-23 |
+| A-02 | Validador simulado ligado ao sistema; retry da mesma operação, sem aceitação nova offline. | D — validador simulado; A — operação online | FR-13 a FR-15 |
+| A-03 | Ocupação é estimativa, não contagem física garantida. | A — pressuposto provisório | FR-17/18 |
+| A-04 | Sem GPS/feed externo obrigatório; pessoal introduz perturbações. | D — decisão de âmbito proposta | FR-6 a FR-9 |
+| A-05 | Pagamento simulado sem gateway real. | D — pagamento simulado; Q-01 | FR-11/12 |
+| A-06 | Serviço independente entrega notificações; canal por escolher. | E — fronteira independente: B2; A — canal: Q-04 | FR-21/22 |
+| A-07 | Perfis base passageiro/pessoal; subperfis operator/admin são proposta a detalhar. | E — perfis base: B1; D — subperfis: Q-09 | FR-24; NFR-6 |
+| A-08 | Interface em português europeu e dados fictícios. | D — idioma e dados de demonstração | Interface, testes e privacidade |
+| A-09 | Calendários Europe/Lisbon; instantes UTC preservando fuso/calendário na geração de viagens. | D — convenção temporal proposta | Mudanças de hora sem offset fixo |
+| A-10 | Base por dia da semana; feriados/exceções com regra explícita. | E — variação semanal: B1; A — feriados/exceções | FR-2/3 |
 
 ### 7.2. Informação por esclarecer
 
-| ID | Lacuna/ambiguidade | Posição e decisão necessária | Resolver antes de |
+| ID | Lacuna/ambiguidade | Posição e decisão necessária | Resolver antes de / requisitos afetados |
 |---|---|---|---|
-| Q-01 | Conta obrigatória na compra e pagamento real não especificados. | Usar A-01/A-05; confirmar com docente caso haja expectativa diferente. | Fechar compra/conta |
-| Q-02 | Catálogo, ativação/expiração, contagem de viagens, transbordos, anti-passback e validação à saída. | Definir catálogo mínimo e exemplos temporais; reembolsos, transferência e suspensão só com decisão explícita. | Implementar regras de títulos |
-| Q-03 | Entradas não permitem inferir saídas/ocupação real. | Definir fórmula por viagem/segmento, capacidade, fim da viagem, eventuais correções manuais e níveis públicos; sensores não assumidos. | Implementar ocupação |
-| Q-04 | Canais, urgência, quiet hours, retries e significado de entrega. | Selecionar canal demonstrável e política para entrega incerta. | Implementar notificações |
-| Q-05 | Sobreposição de perturbações, desvios/cancelamentos parciais. | Precedência cancelamento > desvio/encerramento > atraso é apenas proposta provisória; definir exemplos. | Implementar vista efetiva |
-| Q-06 | Hora do cliente, concorrência e repetição legítima. | Distinguir identidade da operação de direito de viajar; definir instante autoritativo/tolerância. | Fechar validação |
-| Q-07 | Retenção, eliminação, auditoria e persistência de recusas. | Preservar sucessos/contexto; definir prazos e tratamento de dados pessoais. | Fechar política de dados |
-| Q-08 | Sem workload, SLOs ou tolerância a dados desatualizados. | Definir carga/metas; justificar metas com carga e infraestrutura de referência. | Testes de desempenho/aceitação |
-| Q-09 | Subperfis e detalhe de auditoria. | Justificar permissões/campos além de passageiro/pessoal. | Implementar autorizações |
-| Q-10 | Feriados e transições de hora. | Usar A-09/A-10 e definir viagens em mudanças de hora. | Gerar viagens |
-| Q-11 | Afetados, alterações relevantes e subscrições sobrepostas. | Cobrir horários/perturbações; decidir avisos de ocupação/bilhetes e consolidação. | Fechar matching/eventos |
+| Q-01 | Conta obrigatória na compra e pagamento real não especificados. | Usar A-01/A-05; confirmar com docente caso haja expectativa diferente. | Fechar compra/conta; FR-11/12/19 |
+| Q-02 | Catálogo, ativação/expiração, contagem de viagens, transbordos, anti-passback e validação à saída. | Definir catálogo mínimo e exemplos temporais; reembolsos, transferência e suspensão só com decisão explícita. | Implementar regras de títulos; FR-10/13/14 |
+| Q-03 | Entradas não permitem inferir saídas/ocupação real. | Definir fórmula por viagem/segmento, capacidade, fim da viagem, eventuais correções manuais e níveis públicos; sensores não assumidos. | Implementar ocupação; FR-17/18 |
+| Q-04 | Canais, urgência, quiet hours, retries e significado de entrega. | Selecionar canal demonstrável e política para entrega incerta. | Implementar notificações; FR-21/22; NFR-3 |
+| Q-05 | Sobreposição de perturbações, desvios/cancelamentos parciais. | Precedência cancelamento > desvio/encerramento > atraso é apenas proposta provisória; definir exemplos. | Implementar vista efetiva; FR-4/6/7/8/9 |
+| Q-06 | Hora do cliente, concorrência e repetição legítima. | Distinguir identidade da operação de direito de viajar; definir instante autoritativo/tolerância. | Fechar validação; FR-13/14/15; NFR-4 |
+| Q-07 | Retenção, eliminação, auditoria e persistência de recusas. | Preservar sucessos/contexto; definir prazos e tratamento de dados pessoais. | Fechar política de dados; FR-16/23/24/25; NFR-6/7 |
+| Q-08 | Sem workload, SLOs ou tolerância a dados desatualizados. | Definir carga/metas; justificar metas com carga e infraestrutura de referência. | Testes de desempenho/aceitação; NFR-2/5/9 |
+| Q-09 | Subperfis e detalhe de auditoria. | Justificar permissões/campos além de passageiro/pessoal. | Implementar autorizações; FR-24; NFR-6/7 |
+| Q-10 | Feriados e transições de hora. | Usar A-09/A-10 e definir viagens em mudanças de hora. | Gerar viagens; FR-2/3 |
+| Q-11 | Afetados, alterações relevantes e subscrições sobrepostas. | Cobrir horários/perturbações; decidir avisos de ocupação/bilhetes e consolidação. | Fechar matching/eventos; FR-20/21/22 |
 
 Estas questões podem permanecer abertas na especificação inicial, mas requerem decisão registada antes da implementação afetada. Pressupostos não equivalem a confirmação do docente.
 
@@ -204,13 +213,26 @@ Estas decisões serão detalhadas em ADRs antes da implementação. Não se afir
 
 ### 8.3. Tecnologias propostas
 
-Propõem-se TypeScript/Node.js, React/Vite, NestJS, PostgreSQL por serviço, RabbitMQ e OpenAPI 3.1: linguagem comum, contratos explícitos e transações. Prisma Migrate ou node-pg-migrate e Zod ou class-validator permanecem por selecionar. Redis só perante necessidade demonstrada.
+#### 8.3.1. Base tecnológica proposta para a arquitetura inicial (D)
 
-A entrega prevê Docker/Compose, Traefik, Terraform, GitHub Actions com runner self-hosted, GHCR e blue-green com rollback. A verificação prevê ESLint/Semgrep, Vitest, Supertest/Testcontainers, Pact, Playwright e, conforme risco, k6/Stryker e Trivy/Syft. A operação prevê OpenTelemetry, Prometheus, Loki, Tempo, Grafana, GitHub Secrets e SOPS/age.
+| Tecnologia | Justificação e ligação aos requisitos |
+|---|---|
+| TypeScript/Node.js | Linguagem comum para a aplicação web e os serviços, facilitando a manutenção dos contratos. |
+| React/Vite | Aplicação web para passageiros e pessoal; concretiza a interface exigida em SYS-ARCH-01. |
+| NestJS | Organização dos backends e das interfaces HTTP; proposta de implementação das fronteiras da secção 8.1. |
+| PostgreSQL, com dados privados por serviço | Persistência transacional para compra e validação; FR-12/14/15 e NFR-4. |
+| RabbitMQ | Comunicação assíncrona com reentrega e isolamento das notificações; SYS-COMM-01/03 e D-02/D-07. |
+| OpenAPI | Especificação dos contratos HTTP, inicialmente segundo OpenAPI 3.1; SYS-COMM-02. |
+| Docker/Compose | Contentorização e execução reproduzível dos componentes; SYS-DEP-02. |
+| GitHub Actions | Proposta para automatizar build, verificação e deployment, com runner self-hosted no ambiente de desenvolvimento; SYS-CI-01/02 e SYS-DEP-01. |
 
-São escolhas de desenho. As versões das tecnologias propostas devem ser verificadas quanto a suporte/compatibilidade e fixadas no início da implementação; não se afirma aqui que sejam as versões atuais recomendadas. A equipa deve rever o custo operacional do conjunto de ferramentas.
+Estas escolhas são propostas de desenho justificadas para a Milestone 1, não tecnologias impostas pelo enunciado nem prova de implementação. Versões, compatibilidade e custo operacional serão confirmados antes da implementação.
 
-A equipa considera Kubernetes/k3s, Kafka, múltiplos repositórios e MongoDB desproporcionados ou menos adequados à base transacional. Claude Code, hooks e MCP são propostas de workflow, não configurações comprovadamente operacionais.
+#### 8.3.2. Ferramentas e decisões ainda em avaliação
+
+Ferramentas adicionais de observabilidade, segurança, análise estática, testes avançados, gestão de segredos e Infrastructure as Code serão selecionadas nas milestones seguintes com base nas necessidades identificadas durante implementação, CI/CD e deployment. Permanecem por selecionar os mecanismos de migração de dados, validação de schemas, publicação de imagens e encaminhamento de tráfego. Cache adicional depende de necessidade demonstrada.
+
+A estratégia concreta de deployment e rollback será definida e verificada em SYS-DEP-03. As categorias de testes e os resultados exigidos na secção 12 mantêm-se, independentemente dos produtos escolhidos. Não se pressupõe configuração operacional de agentes, hooks ou integrações com ferramentas.
 
 ## 9. Modelo conceptual e ciclos de vida
 
@@ -263,6 +285,8 @@ Envelope: `eventId`, `eventType`, `schemaVersion`, `occurredAt`, `producer`, `co
 Deduplicação de notificações distingue evento/destinatário/destino e consolida subscrições sobrepostas quando representam a mesma comunicação (Q-04/Q-11). Restrição única evita duplicados lógicos, não garante entrega externa exatamente uma vez. O adaptador necessita de idempotência ou política de resultado incerto.
 
 ## 11. Comportamentos críticos e recuperação
+
+Os fluxos seguintes são propostas iniciais para satisfazer os requisitos e serão refinados com as decisões Q-01 a Q-11 e os contratos. Não descrevem implementação já existente.
 
 ### 11.1. Aquisição
 
@@ -325,11 +349,36 @@ Integrações usam PostgreSQL/RabbitMQ reais quando a garantia depende de transa
 
 ## 13. Utilização de IA e evidências
 
-### 13.1. Contributo e limites da evidência
+### 13.1. Registo da assistência de IA
 
 Foi utilizada assistência de IA na estruturação dos requisitos, análise de ambiguidades, revisão de rastreabilidade e preparação da arquitetura inicial. Esta consolidação foi produzida com assistência de Codex.
 
-O contributo está refletido nos requisitos, pressupostos, decisões e cenários apresentados neste documento. Para comprovar o processo, a equipa deve incluir na entrega registos relevantes de sessões e revisões, com ferramenta/modelo quando conhecidos, contexto, resultado e validação humana. Esses registos não estão incluídos nesta especificação. Não se atribuem modelos, horas, aprovações ou testes executados sem evidência.
+As evidências abaixo são incorporadas nesta especificação para que a sua leitura não dependa do acesso aos materiais internos de preparação. Os excertos iniciais são transcrições desses materiais; a síntese da revisão e o resultado adotado permitem observar o contributo e os limites da assistência.
+
+| ID | Atividade assistida | Evidência incorporada | Resultado nesta especificação |
+|---|---|---|---|
+| AI-01 | Estruturação inicial dos requisitos | A proposta inicial organizou requisitos funcionais FR-1 a FR-25 e não funcionais NFR-1 a NFR-9. Exemplo: “Purchase is idempotent, so a retried request cannot issue two tickets.” | FR-12 mantém a proteção contra emissão duplicada; V-03 prevê a sua verificação perante resposta perdida. |
+| AI-02 | Revisão crítica da arquitetura | A revisão de IA, datada de 10/10/2026 no próprio registo, identificou um conflito na possibilidade de começar com um único backend e separar serviços mais tarde. Recomendou uma fronteira independente para notificações. | Secção 8 e D-01/D-07: três backends independentes e notificações fora do caminho crítico de consulta/validação. |
+| AI-03 | Deteção de metas sem fundamento | A proposta inicial incluía disponibilidade de 99,9%, p95 inferior a 300 ms na validação e 200 ms nas consultas. A revisão assinalou que esses valores não estavam fundamentados no enunciado. | NFR-5 e Q-08: metas dependentes de carga e infraestrutura de referência, sem compromissos numéricos assumidos. |
+| AI-04 | Identificação de pressupostos de âmbito | Excerto inicial: “Payment is delegated to an external provider.” A revisão distinguiu aquisição de bilhetes de integração obrigatória com um prestador de pagamentos. | A-05 e D-06: pagamento simulado; Q-01 mantém explícita a necessidade de esclarecer expectativas diferentes. |
+| AI-05 | Análise de falhas e consistência | Excerto inicial sobre validadores: “They may retry and may be briefly offline.” A revisão distinguiu a repetição de uma operação de uma nova aceitação offline, que poderia consumir o mesmo direito em dispositivos diferentes. | A-02, FR-15 e secção 11.2: identidade estável para retries, decisão autoritativa no Core e ausência de nova aceitação offline. |
+| AI-06 | Refinamento com assistência de Codex | A consolidação separou requisitos explícitos, inferências, pressupostos e decisões de desenho; explicitou ainda restrições de engenharia e cenários de verificação. | Classificação E/I/A/D na secção 2, registo SYS na secção 6 e cenários V-01 a V-12 na secção 12. |
+
+Este registo documenta a assistência na análise e revisão; não comprova a correção de todas as propostas. A identificação exata dos modelos das etapas iniciais, os prompts completos, a duração das atividades e a aprovação global pela equipa não estão registados aqui. Não se declaram testes de software executados com base nesta evidência documental.
+
+### 13.1.1. Registo de utilização de IA na Milestone 1
+
+As linhas seguintes registam atividades observadas nos materiais de preparação e nesta interação. A data de 10/10/2026 corresponde à data declarada na revisão, sem comprovar a data da sessão. Os campos desconhecidos ficam explicitamente por preencher. Os excertos e resultados AI-01 a AI-06 acima integram a evidência entregue, sem exigir acesso aos rascunhos.
+
+| ID/Data | Ferramenta/modelo | Atividade/tarefa | Contexto ou objetivo | Resultado/proposta da IA | Validação/revisão humana | Decisão/alteração resultante | Requisitos/secções afetadas |
+|---|---|---|---|---|---|---|---|
+| M1-AI-01 / [A PREENCHER PELA EQUIPA] | Ferramenta/modelo: [A PREENCHER PELA EQUIPA] | Estruturação inicial | Organizar comportamentos e qualidades do sistema | FR/NFR e proposta de idempotência; excerto AI-01 | Revisor, data, método e resultado: [A PREENCHER PELA EQUIPA] | Proteção contra emissão duplicada incorporada; aprovação humana: [A PREENCHER PELA EQUIPA] | FR-12; NFR-3; V-03 |
+| M1-AI-02 / revisão datada de 10/10/2026 | Revisão identificada como GPT; modelo exato: [A PREENCHER PELA EQUIPA] | Arquitetura e rastreabilidade | Confrontar a proposta com a distribuição exigida | Conflito no backend único e recomendação de fronteira independente; AI-02 | Revisor, data e confronto com B2: [A PREENCHER PELA EQUIPA] | Separação de serviços documentada; confirmação humana: [A PREENCHER PELA EQUIPA] | SYS-ARCH-01; D-01/D-07; secção 8 |
+| M1-AI-03 / revisão datada de 10/10/2026 | GPT; modelo exato: [A PREENCHER PELA EQUIPA] | Revisão de pressupostos e metas | Distinguir obrigações de propostas não fundamentadas | Metas sem carga de referência e gateway não obrigatório; AI-03/04 | Revisor, data e resultado: [A PREENCHER PELA EQUIPA] | Metas remetidas para Q-08 e pagamento simulado proposto; aprovação: [A PREENCHER PELA EQUIPA] | NFR-5; A-05; Q-01/Q-08; D-06 |
+| M1-AI-04 / revisão datada de 10/10/2026 | GPT; modelo exato: [A PREENCHER PELA EQUIPA] | Retries e consistência | Distinguir repetição segura de nova aceitação offline | Risco de consumo concorrente sem estado autoritativo; AI-05 | Revisor, data e análise de cenários: [A PREENCHER PELA EQUIPA] | Decisão online e chave estável documentadas; aprovação: [A PREENCHER PELA EQUIPA] | A-02; FR-14/15; D-03/D-08; V-05 |
+| M1-AI-05 / 24/10/2026 | Codex; modelo exato: [A PREENCHER PELA EQUIPA] | Revisão documental da entrega | Aplicar o pedido de revisão e os seis critérios M1 ao documento existente | Separação das restrições, redução de escolhas prematuras e registo de lacunas | Intervenções observadas: pedido humano de retirar fontes inacessíveis, incorporar evidências e rever a entrega. Revisor final, data e resultado: [A PREENCHER PELA EQUIPA] | Alterações incorporadas nesta versão; aceitação final: [A PREENCHER PELA EQUIPA] | Secções 2, 6, 7, 8.3 e 13–14 |
+
+Uma revisão por IA constitui análise crítica adicional, sem equivaler a validação humana independente. A regra de aceitação é rever os resultados contra B1–B8, documentar concordâncias e correções e só então aprovar a especificação. As intervenções humanas documentadas mostram orientação e pedido de retrabalho; não demonstram aceitação automática nem aprovação integral. Prompts completos, duração e esforço não disponíveis: [A PREENCHER PELA EQUIPA].
 
 ### 13.2. Refinamentos incorporados
 
@@ -349,19 +398,34 @@ A tabela explicita o tratamento documental destes aspetos; não declara resultad
 
 ### 13.3. Validação humana e recolha futura
 
-Antes da avaliação, a equipa deve rever B1–B8, confirmar/contestar pressupostos e decisões e registar responsável, data e resultado. Esta especificação não declara essa aprovação concluída.
+Antes da submissão desta versão, é requerida uma revisão humana final dos requisitos, pressupostos, decisões e rastreabilidade B1–B8. O registo abaixo deve documentar o processo efetivamente realizado; a revisão documental assistida por IA não permite declarar uma aprovação da equipa sem esse registo.
+
+| Campo | Registo da revisão humana final |
+|---|---|
+| Data | [A PREENCHER PELA EQUIPA] |
+| Revisores | [A PREENCHER PELA EQUIPA] |
+| Versão revista | 1.1; identificação do commit/ficheiro submetido: [A PREENCHER PELA EQUIPA] |
+| Método e âmbito | Confronto com o enunciado, revisão de FR/NFR, A/Q, decisões D, cenários V e evidências de IA; execução efetiva: [A PREENCHER PELA EQUIPA] |
+| Correções e resultado | [A PREENCHER PELA EQUIPA] |
+| Aprovação para submissão e confirmação de compreensão pelos membros | [A PREENCHER PELA EQUIPA] |
+
+A revisão deve avaliar a coerência e suficiência da especificação inicial, incluindo a identificação consciente de questões por resolver. Q-01 a Q-11 podem continuar deliberadamente abertas quando o enunciado não define as regras de domínio ou os parâmetros necessários. A aprovação da especificação inicial não fecha essas questões: as decisões afetadas exigem resolução registada antes da implementação correspondente. Inversamente, a existência de questões abertas não demonstra ausência de revisão humana.
 
 Cada atividade deve guardar identificador/data, requisito/tarefa, ferramenta/modelo quando conhecidos, contexto/prompt ou referência de sessão, resultado/commit, verificações, falhas, intervenção humana e esforço/retrabalho medidos. Informação desconhecida consta como não registada. Métricas de engenharia são distintas das métricas operacionais do produto.
 
-Como processo de supervisão proposto, os resultados de agentes são sujeitos a validação; merges dependem dos checks previstos; alterações a testes exigem justificação e aprovação humana; decisões arquiteturais são registadas antes de implementar; duas falhas na mesma tarefa conduzem a intervenção humana e registo. Este processo planeado não é apresentado como infraestrutura já operacional.
+Como processo de supervisão proposto, resultados de agentes são sujeitos a verificação independente e revisão humana; alterações arquiteturais e a testes devem ser justificadas e registadas. Critérios de escalada e gates concretos serão definidos pela equipa: [A PREENCHER PELA EQUIPA]. Este processo não é apresentado como infraestrutura já operacional.
 
-## 14. Correspondência com a milestone 1
+## 14. Correspondência com a Milestone 1
 
-| Critério mínimo, enunciado p. 4 | Localização | Estado documental |
-|---|---|---|
-| Requisitos funcionais/não funcionais | Secções 4–6 | Identificados, classificados e ligados à origem. |
-| Ambiguidades, inconsistências, lacunas e pressupostos | Secções 7–8 e 13 | Registados; regras em aberto explícitas. |
-| Rastreabilidade ao enunciado | Fontes B1–B8 e tabelas 4–6 | Origem/aceitação previstas; sem implementação ou testes executados associados. |
-| Componentes/responsabilidades | Secções 8–10 | Proposta distribuída e interfaces iniciais. |
-| IA na análise/refinamento/validação | Secção 13 | Contributo declarado; registos de sessões e aprovação humana por anexar. |
-| Explicar/justificar resultado | Secções 7–8 | Depende da revisão e compreensão de todos os membros. |
+Auditoria documental contra os seis critérios da p. 4 do enunciado. «Cumprido» refere-se ao conteúdo desta especificação inicial, sem declarar implementação ou testes de software concluídos.
+
+| Critério M1 | Estado | Secção | Observações |
+|---|---|---|---|
+| 1. Main functional and non-functional requirements identified and documented. | Cumprido | 4–6.1 | FR-1 a FR-25 e NFR-1 a NFR-9 preservados, com critérios previstos e restrições de engenharia. |
+| 2. Relevant ambiguities, inconsistencies, missing information and assumptions documented. | Cumprido | 7, 8 e 13.2 | A-01 a A-10 e Q-01 a Q-11 explícitos; propostas e lacunas distinguidas das obrigações. |
+| 3. Requirements traceable to project description and constraints. | Cumprido | 2, 4–8 e 12 | B1–B8 ligados aos requisitos; D e V ligados a requisitos e restrições. As adições de desenho estão identificadas. |
+| 4. Initial decomposition into main components and responsibilities. | Cumprido | 8–10 | Web, Core, Validation Service e Notification Service; fronteiras, dados e comunicação síncrona/assíncrona propostos. |
+| 5. Evidence of how LLMs/AI agents supported requirements analysis, refinement and validation. | Parcial | 13.1–13.2 | Excertos e alterações concretas incorporados; registo M1-AI preenchido apenas com informação disponível. Identificação completa de sessões e revisão humana dos resultados por completar. |
+| 6. Team able to explain and justify resulting requirements and main decisions. | Parcial | 7–8 e 13.3 | Justificações documentadas; revisão final e compreensão de todos os membros exigem confirmação humana. |
+
+A submissão requer completar o registo humano da secção 13.3 e os campos factuais do registo M1-AI que a equipa consiga comprovar. As lacunas de evidência não são substituídas por afirmações de cumprimento.
