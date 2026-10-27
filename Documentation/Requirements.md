@@ -1,11 +1,11 @@
 # MetroIsJustABus — Especificação de requisitos e arquitetura inicial
 
 **Membros do grupo:**
-- Bruno Sampaio — N.º de estudante
-- David Gregório — N.º de estudante
-- Gonçalo Silva — N.º de estudante
+- Bruno Sampaio — 2026193650
+- David Gregório — 2023220268
+- Gonçalo Silva — 2023215512
 - João Santos — 2021217215
-- Miguel — N.º de estudante
+- Miguel Pereira — 2026195153
 
 **Unidade curricular:** Automated Software Engineering, 2026/2027  
 **Entrega:** Milestone 1 — Requirements, 27 de outubro de 2026 (5%)  
@@ -93,7 +93,7 @@ Os critérios são verificações futuras, não resultados obtidos. Web designa 
 | NFR-5 | Autorizar no backend, minimizar dados pessoais e proteger segredos. | I/D — proposta da equipa | Acessos entre contas/perfis; ausência de segredos em código/imagens/logs. |
 | NFR-6 | Rastrear operações críticas entre pedido, resultado, estado e eventos. | I/D — B1 | Reconstruir compra, validação e alteração operacional. |
 | NFR-7 | Evoluir regras/contratos sem alterar retroativamente direitos adquiridos. | D — proposta da equipa | Nova versão não modifica bilhetes existentes. |
-| NFR-8 | Observar comportamento para detetar/diagnosticar falhas e validar deployments. | E — B6, p. 3; D — ferramentas propostas na secção 8.3 | Correlacionar operação entre serviços e dependência indisponível. |
+| NFR-8 | Observar comportamento para detetar/diagnosticar falhas e validar deployments. | E — B6, p. 3 | Correlacionar operação entre serviços e dependência indisponível. |
 
 As metas de disponibilidade e latência dependem da definição de carga e infraestrutura de referência em Q-08. Não se assume ocupação física exata a partir de entradas apenas.
 
@@ -154,7 +154,8 @@ São obrigações explícitas do projeto completo, identificadas nesta milestone
 | Q-09 | Subperfis e detalhe de auditoria. | Justificar permissões/campos além de passageiro/pessoal. | Implementar autorizações; FR-24; NFR-6/7 |
 | Q-10 | Feriados e transições de hora. | Usar A-09/A-10 e definir viagens em mudanças de hora. | Gerar viagens; FR-2/3 |
 | Q-11 | Afetados, alterações relevantes e subscrições sobrepostas. | Cobrir horários/perturbações; decidir avisos de ocupação/bilhetes e consolidação. | Fechar matching/eventos; FR-20/21/22 |
-| Q-12 | Medir desempenho com carga/infraestrutura documentadas. | Acordar workload realista para definir testes de carga e requisitos numéricos de latência/throughput | (IA Completa) |
+| Q-12 | Medir desempenho com carga/infraestrutura documentadas. | Acordar workload realista para definir testes de carga e requisitos numéricos de latência/throughput | Testes de desempenho/aceitação; NFR-2 e NFR-8 (impacto indireto) |
+
 
 Estas questões podem permanecer abertas na especificação inicial, mas requerem decisão registada antes da implementação afetada. Pressupostos não equivalem a confirmação do docente.
 
@@ -189,101 +190,9 @@ Estas decisões serão detalhadas em ADRs antes da implementação. Não se afir
 | D-07 | Notificações fora do caminho crítico de consulta/validação: isolamento de falhas. | NFR-1 |
 | D-08 | Chaves de idempotência ligadas a payload e restrições únicas: retry devolve original; mesma chave com dados diferentes é conflito. | FR-12/15/22 |
 
-## 9. Modelo conceptual e ciclos de vida
+## 9. Utilização de IA e evidências
 
-Modelo inicial, não esquema físico implementado. Não se exige entidade de frota/tipo de veículo; capacidade pode ser atributo da viagem.
-
-| Grupo / autoridade | Entidades e relações | Ciclo de vida/regras |
-|---|---|---|
-| Rede / Core | Linha, Variante, Paragem, ParagemDaVariante; sequência de ocorrências ordenadas | Identidade estável e referências históricas. |
-| Planeamento / Core | Calendário, VersãoDeHorário, ViagemPlaneada, Passagem; versão gera zero ou mais viagens | Recorrência distinta de execução numa data; passagens ordenadas e versões preservadas. |
-| Perturbações / Core | Perturbação, alvos e período | Estados propostos: planeada/ativa/encerrada/expirada; Q-05. |
-| Bilhética / Core | Tipo, VersãoDeTipo, Aquisição, Bilhete | Bilhete referencia condições exatas adquiridas; compra pendente/concluída/falhada; título segue Q-02. |
-| Validação / Core | Bilhete com zero ou mais ValidaçõesAceites; ResultadoDeOperação liga chave/payload à decisão | Sucessos imutáveis e consumo atómico; resultado de recusa para retries não é histórico analítico permanente. |
-| Ocupação / Core | Viagem com zero ou uma EstimativaAtual e, se adotado, zero ou mais RegistosHistóricos | Separar estado atual de snapshots; Q-03/Q-07. |
-| Identidade / Core | Conta, PerfilDeAcesso; conta com zero ou mais bilhetes | Autorização backend e referências lógicas noutros serviços. |
-| Interação / Notificações | Subscrição, Preferência, Notificação | Subscrição ativa/cancelada; notificação pendente/enviada/falhada; Q-04/Q-11. |
-| Integração / cada serviço | Outbox, EventoProcessado | Publicação após commit; efeitos/deduplicação antes de confirmar mensagem. |
-
-Referências entre serviços são lógicas/projeções obtidas por API/eventos, não chaves estrangeiras entre bases. Eventos fornecem alvos suficientes ou enriquecimento explícito para selecionar afetados.
-
-Não se editam validações históricas para corrigir o passado; correções devem ser rastreáveis. A utilização de soft deletion não autoriza apagar/alterar registos que sustentam direitos e auditoria. Retenção física segue Q-07.
-
-## 10. Contratos iniciais
-
-Exemplos propostos, não endpoints existentes. Schemas, autenticação, erros e compatibilidade serão versionados antes do código.
-
-| Interface | Serviço | Operações representativas | Requisitos |
-|---|---|---|---|
-| Consulta pública | Core | `GET /api/v1/bus-lines`, `GET /api/v1/bus-lines/{id}/stops`, `GET /api/v1/trips/{id}`; horários/perturbações | FR-1 a FR-4/9 |
-| Conta/carteira | Core | `POST /api/v1/accounts`, `POST /api/v1/auth/login`, `GET/POST /api/v1/me/tickets` | FR-11/12/19 |
-| Operação | Core | Gestão de rede/horários/tipos/perturbações; consulta de validações/ocupação | FR-5 a FR-10/16/18/24 |
-| Validação externa | Validação | `POST /api/v1/validations`: bilhete, viagem, paragem e contexto temporal | FR-13 a FR-15 |
-| Decisão interna | Core | `POST /api/v1/internal/validation-decisions`, autenticado como serviço | FR-13 a FR-15 |
-| Subscrições/preferências | Notificações | `GET/POST /api/v1/me/subscriptions`, cancelamento, preferências e histórico | FR-20 a FR-23 |
-
-Compra/validação usam `Idempotency-Key`, contextualizada por operação/autor e ligada ao payload. A identidade é preservada até ao Core; eventual `eventId` do cliente não constitui segunda identidade contraditória. Eventos publicados têm identidade própria e referência à operação causadora.
-
-Identidade do utilizador vem do token; serviços usam credenciais distintas. Consultas públicas são explicitamente marcadas como tal, aplicando recusa por omissão às restantes operações e respeitando A-01. Erros seguem Problem Details sem detalhes internos. Dinheiro usa cêntimos/moeda; instantes ISO 8601/UTC e calendários locais A-09.
-
-### 10.1. Eventos propostos
-
-| Evento | Produtor | Consumidor/efeito |
-|---|---|---|
-| `schedule.published` / `schedule.updated` | Core | Notificações atualiza alvos e seleciona subscritores. |
-| `disruption.registered` / `disruption.updated` / `disruption.closed` | Core | Notificações aplica âmbito/preferências. |
-| `ticket.validated` | Core após aceitação | Core, módulo de ocupação, atualiza estimativa uma vez. |
-| `trip.occupancy_changed` | Core | Projeções/alertas; avisos de ocupação dependem de Q-11. |
-
-**Envelope:** `eventId`, `eventType`, `schemaVersion`, `occurredAt`, `producer`, `correlationId`, `payload`. Payload identifica entidades, versão de domínio e alvos. Consumidores persistem efeitos e deduplicação atomicamente antes de acknowledgement; versões impedem regressões por eventos antigos.
-
-Deduplicação de notificações distingue evento/destinatário/destino e consolida subscrições sobrepostas quando representam a mesma comunicação (Q-04/Q-11). Restrição única evita duplicados lógicos, não garante entrega externa exatamente uma vez. O adaptador necessita de idempotência ou política de resultado incerto.
-
-## 11. Comportamentos críticos e recuperação
-
-Os fluxos seguintes são propostas iniciais para satisfazer os requisitos e serão refinados com as decisões Q-01 a Q-11 e os contratos. Não descrevem implementação já existente.
-
-### 11.1. Aquisição
-
-1. Passageiro autenticado escolhe versão de tipo e envia chave estável.
-2. Core procura resultado prévio e verifica coincidência do payload.
-3. Compra simulada concluída grava aquisição, bilhete e outbox aplicável atomicamente.
-4. Retry após resposta perdida devolve o original; compra falhada não emite bilhete.
-
-### 11.2. Validação
-
-1. Cliente envia contexto e chave ao validation-service.
-2. Serviço encaminha ao Core com timeout e identidade preservada.
-3. Core recupera resultado existente ou avalia regras com controlo de concorrência sobre o bilhete.
-4. Aceitação grava validação, consumo aplicável, resultado e outbox na mesma transação. Recusa devolve motivo e conserva o resultado necessário a retries conforme política definida.
-5. Resposta perdida conduz à repetição da mesma operação. Duas operações distintas concorrem segundo os direitos do título; não se proíbe genericamente uma segunda validação legítima.
-6. Evento aceite atualiza ocupação assincronamente; recusa não incrementa ocupação.
-
-### 11.3. Perturbação e notificação
-
-1. Pessoal altera perturbação; Core grava estado/outbox atomicamente e reflete a situação efetiva nas consultas.
-2. Serviço independente consome evento, resolve alvos/subscrições e aplica preferências.
-3. Cria notificações deduplicadas e entrega por adaptador com retries limitados.
-4. Regista resultado e conserva falhas persistentes para diagnóstico/recuperação.
-
-### 11.4. Modos de falha
-
-| Falha | Resultado esperado |
-|---|---|
-| Notificações indisponíveis | Consulta/validação independentes continuam; pendentes recuperam depois. Subscrições podem ficar indisponíveis. |
-| Broker/relay indisponível | Outbox conserva eventos; ocupação/notificações podem atrasar; recuperar sem perda de eventos confirmados. |
-| Resposta perdida | Mesma chave recupera resultado sem efeito adicional. |
-| Core indisponível na validação | Sem aceitação nova local; erro temporário e reconciliação de resultados incertos com a mesma chave. |
-| Consumidor de ocupação parado | Validação aceite mantém-se; estimativa sinaliza desatualização quando necessário e converge após recuperação. |
-| Evento duplicado/fora de ordem | Identidade/versão impedem efeitos repetidos e regressão de projeções. |
-| Entrega externa incerta | Aplicar Q-04; não declarar garantia exatamente uma vez sem mecanismo correspondente. |
-| Deployment falhado | Bloquear promoção e recuperar versão anterior segundo procedimento a implementar/testar. |
-
-Chamadas síncronas têm timeout, retries limitados apenas quando seguros e isolamento por circuit breaker. Limites concretos dependem de Q-08.
-
-## 12. Utilização de IA e evidências
-
-### 12.1. Registo da assistência de IA
+### 9.1. Registo da assistência de IA
 
 Foi utilizada assistência de IA na estruturação dos requisitos, análise de ambiguidades, revisão de rastreabilidade e preparação da arquitetura inicial. Esta consolidação foi produzida com assistência de Codex.
 
@@ -295,4 +204,4 @@ As evidências abaixo são incorporadas nesta especificação para que a sua lei
 | AI-02 | Revisão crítica da arquitetura | A revisão de IA, datada de 10/10/2026 no próprio registo, identificou um conflito na possibilidade de começar com um único backend e separar serviços mais tarde. Recomendou uma fronteira independente para notificações. | Secção 8 e D-01/D-07: três backends independentes e notificações fora do caminho crítico de consulta/validação. |
 | AI-03 | Deteção de metas sem fundamento | A proposta inicial incluía disponibilidade de 99,9%, p95 inferior a 300 ms na validação e 200 ms nas consultas. A revisão assinalou que esses valores não estavam fundamentados no enunciado. | NFR-5 e Q-08: metas dependentes de carga e infraestrutura de referência, sem compromissos numéricos assumidos. |
 | AI-04 | Identificação de pressupostos de âmbito | Excerto inicial: “Payment is delegated to an external provider.” A revisão distinguiu aquisição de bilhetes de integração obrigatória com um prestador de pagamentos. | A-05 e D-06: pagamento simulado; Q-01 mantém explícita a necessidade de esclarecer expectativas diferentes. |
-| AI-05 | Análise de falhas e consistência | Excerto inicial sobre validadores: “They may retry and may be briefly offline.” A revisão distinguiu a repetição de uma operação de uma nova aceitação offline, que poderia consumir o mesmo direito em dispositivos diferentes. | A-02, FR-15 e secção 11.2: identidade estável para retries, decisão autoritativa no Core e ausência de nova aceitação offline. |
+| AI-05 | Análise de falhas e consistência | Excerto inicial sobre validadores: “They may retry and may be briefly offline.” A revisão distinguiu a repetição de uma operação de uma nova aceitação offline, que poderia consumir o mesmo direito em dispositivos diferentes. | A-02, FR-15 |
