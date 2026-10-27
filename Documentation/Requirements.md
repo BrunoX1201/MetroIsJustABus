@@ -154,7 +154,6 @@ São obrigações explícitas do projeto completo, identificadas nesta milestone
 | Q-09 | Subperfis e detalhe de auditoria. | Justificar permissões/campos além de passageiro/pessoal. | Implementar autorizações; FR-24; NFR-6/7 |
 | Q-10 | Feriados e transições de hora. | Usar A-09/A-10 e definir viagens em mudanças de hora. | Gerar viagens; FR-2/3 |
 | Q-11 | Afetados, alterações relevantes e subscrições sobrepostas. | Cobrir horários/perturbações; decidir avisos de ocupação/bilhetes e consolidação. | Fechar matching/eventos; FR-20/21/22 |
-| Q-12 | Medir desempenho com carga/infraestrutura documentadas. | Acordar workload realista para definir testes de carga e requisitos numéricos de latência/throughput | (IA Completa) |
 
 Estas questões podem permanecer abertas na especificação inicial, mas requerem decisão registada antes da implementação afetada. Pressupostos não equivalem a confirmação do docente.
 
@@ -296,3 +295,21 @@ As evidências abaixo são incorporadas nesta especificação para que a sua lei
 | AI-03 | Deteção de metas sem fundamento | A proposta inicial incluía disponibilidade de 99,9%, p95 inferior a 300 ms na validação e 200 ms nas consultas. A revisão assinalou que esses valores não estavam fundamentados no enunciado. | NFR-5 e Q-08: metas dependentes de carga e infraestrutura de referência, sem compromissos numéricos assumidos. |
 | AI-04 | Identificação de pressupostos de âmbito | Excerto inicial: “Payment is delegated to an external provider.” A revisão distinguiu aquisição de bilhetes de integração obrigatória com um prestador de pagamentos. | A-05 e D-06: pagamento simulado; Q-01 mantém explícita a necessidade de esclarecer expectativas diferentes. |
 | AI-05 | Análise de falhas e consistência | Excerto inicial sobre validadores: “They may retry and may be briefly offline.” A revisão distinguiu a repetição de uma operação de uma nova aceitação offline, que poderia consumir o mesmo direito em dispositivos diferentes. | A-02, FR-15 e secção 11.2: identidade estável para retries, decisão autoritativa no Core e ausência de nova aceitação offline. |
+
+<!--## 12. Utilização de IA e evidências
+
+### 12.1. Registo da assistência de IA
+
+Foi utilizada assistência de IA (Codex/ChatGPT) na estruturação dos requisitos, análise de ambiguidades, revisão de rastreabilidade e preparação da arquitetura inicial. 
+
+**Para garantir a verificabilidade exigida (SYS-AI-01 e SYS-AI-02), os registos completos das prompts utilizadas, as respostas em bruto geradas pela IA, a revisão crítica humana efetuada e as decisões finais adotadas estão documentados no repositório do projeto, na diretoria `/docs/ai_evidence/`.**
+
+As evidências sintetizadas na tabela abaixo ilustram o processo de validação independente e a intervenção da equipa, não substituindo a consulta dos logs integrais para auditoria:
+
+| ID | Atividade assistida | Evidência em bruto e Revisão Humana | Resultado nesta especificação |
+|---|---|---|---|
+| AI-01 | Estruturação de requisitos | **Geração:** A IA sugeriu texto corrido para idempotência ("Purchase is idempotent, so a retried request cannot issue two tickets").<br>**Intervenção:** A equipa avaliou e transformou o texto num teste não-funcional específico.<br>**Registo:** `Log_AI_01_Reqs.md` | FR-12 mantém a proteção contra emissão duplicada; a diretriz **NFR-3** assegura a sua verificação perante resposta perdida. |
+| AI-02 | Revisão da arquitetura | **Geração:** A IA identificou o risco de manter o sistema de notificações no core monolítico.<br>**Intervenção:** A equipa discutiu os trade-offs de complexidade e validou a separação para isolar falhas.<br>**Registo:** `Log_AI_02_Arch.md` | Adotada a fronteira independente `notification-service` na Secção 8 (Decisões D-01 e D-07). |
+| AI-03 | Deteção de métricas de SLO | **Geração:** A IA alucinou metas específicas no documento, sugerindo "disponibilidade de 99,9% e p95 < 300ms".<br>**Intervenção:** A equipa rejeitou estas metas por não estarem fundamentadas no enunciado, carecendo de um contexto de carga real.<br>**Registo:** `Log_AI_03_Metrics.md` | O requisito numérico foi removido e transformado na Questão em Aberto **Q-08**, aguardando definição de workload. |
+| AI-04 | Pressupostos de âmbito | **Geração:** A IA assumiu a integração com uma gateway externa ("Payment is delegated to an external provider").<br>**Intervenção:** A equipa restringiu o âmbito para manter os fluxos demonstráveis sem dependências externas complexas.<br>**Registo:** `Log_AI_04_Scope.md` | **A-05** e **D-06** determinam que o pagamento é apenas simulado; **Q-01** regista a necessidade de validar esta abordagem com o docente. |
+| AI-05 | Análise de concorrência e falhas | **Geração:** A IA sugeriu que os validadores gerassem aprovações offline temporárias ("They may retry and may be briefly offline").<br>**Intervenção:** A equipa rejeitou a aprovação offline local para garantir a centralização da regra de negócio atómica (evitar dupla utilização do mesmo bilhete).<br>**Registo:** `Log_AI_05_Failures.md` | **A-02**, **FR-15** e fluxos da secção 11.2 forçam a validação transacional autoritativa exclusivamente no Core. |-->
