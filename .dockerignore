@@ -1,0 +1,12 @@
+.git
+.github
+**/node_modules
+**/dist
+**/coverage
+Documentation
+Deliverable
+*.pdf
+.env
+.env.*
+!.env.example
+

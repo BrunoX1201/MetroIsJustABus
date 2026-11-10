@@ -18,11 +18,17 @@
     "dev:validation": "npm run dev --workspace backend/validation-service",
     "dev:notifications": "npm run dev --workspace backend/notification-service",
     "build": "npm run build --workspaces --if-present",
-    "typecheck": "npm run typecheck --workspaces --if-present"
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "eslint frontend backend scripts"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^26.6.6",
+    "eslint": "^10.14.0",
+    "globals": "^17.14.0",
     "tsx": "^4.23.15",
-    "typescript": "^7.0.2"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.2"
   }
 }
