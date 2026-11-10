@@ -1,3 +1,7 @@
+# Rascunho histórico — substituído
+
+Esta versão de trabalho não deve ser usada para avaliação nem implementação. A especificação atual é [Requirements.md](Requirements.md), também disponível em [PDF](Requirements.pdf).
+
 # MetroIsJustABus — Especificação de requisitos e arquitetura inicial
 
 **Membros do grupo:**
