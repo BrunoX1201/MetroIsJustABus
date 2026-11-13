@@ -28,7 +28,6 @@ jobs:
 
   container_smoke:
     name: container-smoke
-    needs: checks
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -87,6 +86,8 @@ jobs:
           context: .
           file: ${{ matrix.dockerfile }}
           build-args: ${{ matrix.build_args }}
+          cache-from: type=gha,scope=${{ matrix.service }}
+          cache-to: type=gha,scope=${{ matrix.service }},mode=max
           push: true
           tags: ${{ steps.registry.outputs.prefix }}/${{ matrix.service }}:sha-${{ github.sha }}
           labels: |
