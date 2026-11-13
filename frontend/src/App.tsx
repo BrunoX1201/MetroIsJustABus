@@ -24,7 +24,7 @@ export default function App() {
   return (
     <main className="shell">
       <p className="eyebrow">MetroIsJustABus</p>
-      <h1>Base do projeto pronta</h1>
+      <h1>A próxima paragem começa aqui</h1>
       <p>
         O frontend React está configurado. As funcionalidades de consulta,
         bilhética, validação e notificações serão implementadas nas próximas etapas.
