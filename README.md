@@ -40,15 +40,29 @@ Também se pode iniciar cada aplicação separadamente com `npm run dev:frontend
 
 ## Pipeline da Milestone 2
 
-O workflow [`.github/workflows/pipeline.yml`](.github/workflows/pipeline.yml) corre em runners do GitHub:
+O workflow [`.github/workflows/pipeline.yml`](.github/workflows/pipeline.yml) corre em `pull_request`, em pushes para `main` e manualmente com `workflow_dispatch`. Todos os jobs usam runners temporários do GitHub. A execução segue esta ordem:
 
-1. Em pull requests e na `main`, instala as dependências com `npm ci`, executa ESLint, typecheck, testes HTTP e build.
-2. Constrói as quatro imagens Docker, arranca a stack completa com Compose e verifica os serviços e o proxy do frontend. Esta stack de verificação é temporária e é removida no fim do job.
-3. Apenas na `main`, publica as imagens no GitHub Container Registry com a tag `sha-<commit>` e a revisão do commit nas labels. Um job separado descarrega as imagens publicadas e repete a verificação com Compose. Quando passa, guarda um artefacto `manifest.json` com o commit e os quatro endereços das imagens.
+| Job | Quando corre | O que faz |
+|---|---|---|
+| `source-checks` | PR e `main` | `npm ci`, ESLint, TypeScript, testes e build dos quatro workspaces |
+| `container-smoke` | PR e `main` | Constrói as quatro imagens, arranca PostgreSQL, RabbitMQ e aplicações com Compose, executa `scripts/smoke.mjs` e remove a stack de teste |
+| `publish-<serviço>` | Só `main`, após os dois checks | Publica uma imagem por aplicação no GHCR |
+| `verify-published-images` | Só `main`, após a publicação | Descarrega as quatro imagens, arranca-as com Compose, repete o smoke test e guarda `release/manifest.json` como artefacto |
 
-Os checks de pull request têm os nomes `source-checks` e `container-smoke`. Para impedir merges quando falham, o proprietário do repositório deve configurar a proteção da branch `main` e exigir ambos os checks. O workflow, por si só, não bloqueia um merge.
+### O que é testado
 
-As imagens publicadas seguem o padrão `ghcr.io/brunox1201/metroisjustabus/<serviço>:sha-<commit>`, com os serviços `frontend`, `core-api`, `validation-service` e `notification-service`. Se o repositório for transferido, o workflow usa automaticamente o novo nome em minúsculas. A visibilidade e o acesso de leitura às imagens dependem das definições do GHCR; os jobs do workflow autenticam-se com `GITHUB_TOKEN`.
+- Os testes HTTP automatizados dos três backends verificam que `GET /health` devolve `200` com a identidade correta do serviço e que uma rota inexistente devolve `404`. São testes de superfície HTTP, não de regras de negócio.
+- `npm run lint` verifica o código com ESLint; `npm run typecheck` verifica TypeScript sem gerar ficheiros; `npm run build` compila os quatro workspaces.
+- O smoke test em contentores consulta `/health` no Core, Validação, Notificações e frontend, verifica `/api/health` através do proxy Nginx e confirma que a página inicial responde e contém `MetroIsJustABus`.
+- O último job repete o smoke test com as imagens **descarregadas do GHCR**, comprovando que os artefactos publicados podem ser instalados.
+
+Os health checks atuais confirmam apenas que os processos HTTP respondem. Não verificam ligações reais à base de dados ou ao broker. Ainda não há testes de fluxos de domínio, interações entre backends, falhas ou recuperação. O frontend de demonstração usa dados locais; os seus exemplos de linhas, horários, perturbações, bilhetes e alertas não são testados como funcionalidades de backend.
+
+### Artefactos e gates
+
+As imagens publicadas seguem o padrão `ghcr.io/brunox1201/metroisjustabus/<serviço>:sha-<commit>`, para `frontend`, `core-api`, `validation-service` e `notification-service`. O namespace é calculado a partir do nome atual do repositório. As labels das imagens e o artefacto `manifest.json` registam o SHA do commit, permitindo relacionar fonte e versão instalável. Os jobs usam `GITHUB_TOKEN` para autenticar no GHCR; a leitura fora do workflow depende das permissões dos pacotes.
+
+A publicação só começa se `source-checks` e `container-smoke` passarem. Para bloquear merges com checks falhados, é necessário configurar a proteção da branch `main` e exigir ambos os checks; o workflow, por si só, não bloqueia um merge.
 
 Para verificar localmente a versão contentorizada antes de publicar:
 
@@ -61,10 +75,12 @@ docker compose --profile container down
 
 Para instalar uma versão já publicada numa máquina com Docker e acesso ao GHCR, faça checkout do commit correspondente e defina `IMAGE_PREFIX=ghcr.io/brunox1201/metroisjustabus` e `IMAGE_TAG=sha-<commit>` no ambiente. Depois execute `docker compose --profile container pull` e `docker compose --profile container up -d --no-build --wait`. O Compose usa volumes para preservar os dados do PostgreSQL e do RabbitMQ.
 
-Nesta fase, a pipeline comprova que produz uma versão instalável, mas o runner do GitHub é temporário: não mantém um ambiente de desenvolvimento disponível após o job. O deployment persistente e o self-hosted runner ficam para quando houver infraestrutura da equipa.
+**Limitação para a Milestone 2:** a pipeline produz e verifica uma versão instalável, mas destrói as stacks de teste no fim dos jobs. Ainda não faz deployment para um ambiente de desenvolvimento persistente nem utiliza o self-hosted runner pedido no enunciado.
 
 O PostgreSQL está em `127.0.0.1:55432` e o RabbitMQ em `127.0.0.1:5672`; a interface de gestão do broker está em `http://127.0.0.1:15672` (`metro` / `metro_dev`). Os utilizadores e bases de desenvolvimento são `metro_core`, `metro_validation` e `metro_notifications`, com passwords `<nome>_dev` definidas em `backend/infra/postgres/init.sql`. Estas credenciais destinam-se apenas ao ambiente local.
 
-## Estado do setup
+## Frontend de demonstração
 
-Os três backends só expõem `/health`, que confirma que o processo HTTP está ativo. Ainda não verificam dependências nem implementam os fluxos de domínio. O frontend mostra o estado da ligação ao Core. Contratos, persistência, outbox, consumidores RabbitMQ, testes de domínio e pipeline entram nas próximas etapas.
+O frontend apresenta exemplos fictícios de linhas, sequência de paragens, partidas, ocupação e perturbações (FR-1 a FR-4, FR-17), bem como modalidades de bilhete (FR-9/10) e subscrições a linhas (FR-19/20). A pesquisa, os filtros, os favoritos, as subscrições e a carteira de bilhetes funcionam **apenas no estado local da página**; uma atualização do browser repõe os exemplos. Os horários, preços e avisos são ilustrativos e não representam informação real de Coimbra.
+
+Os três backends ainda só expõem `/health`. Não existem contas, compra ou validação real de bilhetes, persistência de domínio, eventos, consumidores RabbitMQ nem notificações enviadas. O indicador `Core API` na interface verifica exclusivamente `/api/health`.
