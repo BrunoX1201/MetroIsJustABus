@@ -148,7 +148,6 @@ jobs:
     env:
       IMAGE_TAG: sha-${{ github.sha }}
       COMPOSE_PROJECT_NAME: metro-dev
-      DOCKER_CONFIG: ${{ runner.temp }}/metro-docker
       FRONTEND_BIND_ADDRESS: ${{ vars.DEV_FRONTEND_BIND_ADDRESS || '127.0.0.1' }}
     steps:
       - uses: actions/checkout@v6
@@ -157,6 +156,8 @@ jobs:
           node-version-file: .nvmrc
       - name: Select images for this commit
         run: echo "IMAGE_PREFIX=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+      - name: Isolate registry credentials
+        run: echo "DOCKER_CONFIG=$RUNNER_TEMP/metro-docker" >> "$GITHUB_ENV"
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io
