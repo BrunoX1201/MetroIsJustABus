@@ -1,9 +1,15 @@
+const frontendBindAddress = process.env.FRONTEND_BIND_ADDRESS;
+const frontendHost = frontendBindAddress && frontendBindAddress !== '0.0.0.0'
+  ? frontendBindAddress
+  : '127.0.0.1';
+const frontendBaseUrl = `http://${frontendHost}:8080`;
+
 const endpoints = [
   ['http://127.0.0.1:3001/health', 'core-api'],
   ['http://127.0.0.1:3002/health', 'validation-service'],
   ['http://127.0.0.1:3003/health', 'notification-service'],
-  ['http://127.0.0.1:8080/health', 'frontend'],
-  ['http://127.0.0.1:8080/api/health', 'core-api'],
+  [`${frontendBaseUrl}/health`, 'frontend'],
+  [`${frontendBaseUrl}/api/health`, 'core-api'],
 ];
 
 for (const [url, service] of endpoints) {
@@ -18,7 +24,7 @@ for (const [url, service] of endpoints) {
   console.log(`${service}: ${url} OK`);
 }
 
-const frontend = await fetch('http://127.0.0.1:8080/', {
+const frontend = await fetch(`${frontendBaseUrl}/`, {
   signal: AbortSignal.timeout(5000),
 });
 if (!frontend.ok || !(await frontend.text()).includes('MetroIsJustABus')) {
