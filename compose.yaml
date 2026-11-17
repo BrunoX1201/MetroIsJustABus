@@ -104,7 +104,7 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
     ports:
-      - "127.0.0.1:8080:80"
+      - "${FRONTEND_BIND_ADDRESS:-127.0.0.1}:8080:80"
     depends_on:
       core-api:
         condition: service_healthy

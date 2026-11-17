@@ -48,6 +48,7 @@ O workflow [`.github/workflows/pipeline.yml`](.github/workflows/pipeline.yml) co
 | `container-smoke` | PR e `main` | Constrói as quatro imagens, arranca PostgreSQL, RabbitMQ e aplicações com Compose, executa `scripts/smoke.mjs` e remove a stack de teste |
 | `publish-<serviço>` | Só `main`, após os dois checks | Publica uma imagem por aplicação no GHCR |
 | `verify-published-images` | Só `main`, após a publicação | Descarrega as quatro imagens, arranca-as com Compose, repete o smoke test e guarda `release/manifest.json` como artefacto |
+| `deploy-development` | Só `main`, após a verificação, quando `DEV_RUNNER_READY=true` | Atualiza a stack persistente na VM, repete o smoke test e tenta repor a última versão validada se a nova falhar |
 
 ### O que é testado
 
@@ -75,7 +76,19 @@ docker compose --profile container down
 
 Para instalar uma versão já publicada numa máquina com Docker e acesso ao GHCR, faça checkout do commit correspondente e defina `IMAGE_PREFIX=ghcr.io/brunox1201/metroisjustabus` e `IMAGE_TAG=sha-<commit>` no ambiente. Depois execute `docker compose --profile container pull` e `docker compose --profile container up -d --no-build --wait`. O Compose usa volumes para preservar os dados do PostgreSQL e do RabbitMQ.
 
-**Limitação para a Milestone 2:** a pipeline produz e verifica uma versão instalável, mas destrói as stacks de teste no fim dos jobs. Ainda não faz deployment para um ambiente de desenvolvimento persistente nem utiliza o self-hosted runner pedido no enunciado.
+### Deployment no ambiente de desenvolvimento
+
+O job `deploy-development` está preparado para um runner Linux com as labels `self-hosted`, `linux` e `metro-dev`. Fica desativado até a variável de repositório `DEV_RUNNER_READY` ter o valor `true`, para não deixar pipelines em espera quando a VM não está acessível. Depois de ativado, cada push para `main` que passe os checks publica as imagens e atualiza a VM. Commits em branches de trabalho continuam a fazer apenas os checks de pull request.
+
+Preparação necessária na VM:
+
+1. Garantir acesso SSH ou VPN à rede do departamento, Docker Engine com `docker compose` e espaço para as imagens e volumes. O utilizador que executa o runner precisa de acesso ao daemon Docker. A VM tem de conseguir estabelecer ligações HTTPS de saída ao GitHub e ao GHCR.
+2. No repositório GitHub, em **Settings → Actions → Runners → New self-hosted runner**, seguir as instruções para Linux e acrescentar a label `metro-dev`. Instalar o runner como serviço do sistema para arrancar após reinícios. Não configurar os jobs de PR para correr neste runner.
+3. Em **Settings → Secrets and variables → Actions → Variables**, criar `DEV_RUNNER_READY=true` apenas depois de o runner aparecer como online. Opcionalmente, criar `DEV_FRONTEND_BIND_ADDRESS=0.0.0.0` para disponibilizar a porta 8080 na rede, após configurar a firewall. Por omissão, o frontend fica limitado a `127.0.0.1:8080`; pode ser consultado com um túnel SSH: `ssh -L 8080:127.0.0.1:8080 <utilizador>@<ip-da-vm>`.
+
+O deploy usa `IMAGE_TAG=sha-<commit>` e `COMPOSE_PROJECT_NAME=metro-dev`, pelo que os volumes PostgreSQL e RabbitMQ se mantêm entre execuções. `scripts/deploy-development.sh` guarda a tag da última versão que passou no smoke test no diretório de estado do utilizador do runner. Se a atualização falhar, tenta restaurar essa versão e o job termina com erro. O token de acesso ao GHCR vem do `GITHUB_TOKEN` do job e a sessão Docker é terminada no fim. A password da VM não é guardada no repositório.
+
+**Estado atual:** o workflow e o script estão preparados, mas o runner ainda não foi instalado na VM. O deployment persistente só fica efetivo quando os passos acima estiverem concluídos.
 
 O PostgreSQL está em `127.0.0.1:55432` e o RabbitMQ em `127.0.0.1:5672`; a interface de gestão do broker está em `http://127.0.0.1:15672` (`metro` / `metro_dev`). Os utilizadores e bases de desenvolvimento são `metro_core`, `metro_validation` e `metro_notifications`, com passwords `<nome>_dev` definidas em `backend/infra/postgres/init.sql`. Estas credenciais destinam-se apenas ao ambiente local.
 

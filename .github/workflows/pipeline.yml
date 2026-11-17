@@ -50,7 +50,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: [checks, container_smoke]
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     permissions:
       contents: read
       packages: write
@@ -72,6 +72,7 @@ jobs:
             build_args: SERVICE=notification-service
     steps:
       - uses: actions/checkout@v6
+      - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
       - name: Normalize the GHCR namespace
         id: registry
@@ -86,6 +87,7 @@ jobs:
           context: .
           file: ${{ matrix.dockerfile }}
           build-args: ${{ matrix.build_args }}
+          platforms: linux/amd64,linux/arm64
           cache-from: type=gha,scope=${{ matrix.service }}
           cache-to: type=gha,scope=${{ matrix.service }},mode=max
           push: true
@@ -132,3 +134,36 @@ jobs:
       - name: Stop the temporary stack
         if: always()
         run: docker compose --profile container down --volumes
+
+  deploy_development:
+    name: deploy-development
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.DEV_RUNNER_READY == 'true'
+    needs: verify_published
+    runs-on: [self-hosted, linux, metro-dev]
+    timeout-minutes: 20
+    environment: development
+    permissions:
+      contents: read
+      packages: read
+    env:
+      IMAGE_TAG: sha-${{ github.sha }}
+      COMPOSE_PROJECT_NAME: metro-dev
+      DOCKER_CONFIG: ${{ runner.temp }}/metro-docker
+      FRONTEND_BIND_ADDRESS: ${{ vars.DEV_FRONTEND_BIND_ADDRESS || '127.0.0.1' }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - name: Select images for this commit
+        run: echo "IMAGE_PREFIX=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Deploy and verify on development VM
+        run: bash scripts/deploy-development.sh
+      - name: Remove registry credentials
+        if: always()
+        run: docker logout ghcr.io
