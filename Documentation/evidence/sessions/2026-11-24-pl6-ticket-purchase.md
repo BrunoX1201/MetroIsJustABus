@@ -7,8 +7,8 @@
 | Ferramenta / modelo | Claude app (Anthropic), Claude Opus 5.5. Teve acesso aos PDFs do projeto (enunciado v1.1, PL5–PL8) e ao repositório: primeiro só de leitura, depois com push. |
 | Fase | review, requirements, design, docs |
 | Refs | PL5, PL6; FR-9, FR-10, FR-11, FR-18; REQ-TP-01..11; TASK-TP-01..15 |
-| Autonomia | **A2** na primeira parte: gerou e verificou, sem escrita no repositório, e entregou um patch. **A3** na segunda: com autorização, fez push da branch, abriu o PR e apagou branches. O merge fica com a equipa. |
-| Commits / PR | `840ebc2` (PL6 + correções); commit de evidência; PR `docs/pl6-ticket-purchase-spec` |
+| Autonomia | **A2** na primeira parte: gerou e verificou, sem escrita no repositório, e entregou um patch. **A3** na segunda: com autorização, fez push da branch e abriu o PR #1. O merge fica com a equipa. |
+| Commits / PR | `840ebc2` (PL6 + correções), `68bce48` (evidência); PR #1 (`docs/pl6-ticket-purchase-spec`) |
 | Esforço humano (min) | *a preencher pelo Bruno* |
 
 ## Objetivo e contexto fornecido
@@ -34,7 +34,8 @@ O assistente leu:
    - não havia registo de evidência de IA.
 2. **Correções aplicadas**, segundo a escolha da equipa: renomear para `.ai/steering`; alinhar o *steering* com o código; marcar "In use"/"Planned"; corrigir os documentos; limpar o `product.md`.
 3. **Especificação SDD da compra de bilhete** em `.ai/sdd/specs/ticket-purchase/`: `requirements.md`, `design.md`, `tasks.md` e `review.md`.
-4. **Segunda parte** (autorizada): PR no GitHub; README atualizado; branches obsoletas apagadas; arranque desta pasta de evidência; `CLAUDE.md`; *template* de PR; exportação dos *runs* de CI.
+4. **Segunda parte** (autorizada): PR no GitHub; README atualizado; arranque desta pasta de evidência; `CLAUDE.md`; *template* de PR; exportação dos *runs* de CI.
+5. **Não concluído**: apagar as branches `RequirementsUpdate` (`7b575c5`) e `requirements-changes` (`838c17b`). A sessão não tinha permissão: o proxy recusou tanto `git push --delete` como a API REST. Ficou para um humano. Os SHAs ficam aqui registados para se poder recuperar as branches.
 
 ## Intervenção humana
 
