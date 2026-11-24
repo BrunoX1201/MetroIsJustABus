@@ -22,7 +22,7 @@ scripts/                # dev runner, smoke test, release manifest, deploy
 Documentation/
   Requirements.md       # project-wide requirements (source of FR/NFR/A/Q/D IDs)
   adr/                  # (planned) architectural decisions
-  evidence/             # (planned) agent logs and metrics
+  evidence/             # AI session log, session records, CI run exports
 ```
 
 Each backend is an npm workspace with the same internal structure. Existing code (`src/app.ts`, `src/index.ts`) is the composition root; domain code goes into modules:
@@ -113,7 +113,8 @@ All error responses follow Problem Details (RFC 9457):
 ## Commits and branches
 
 - Conventional Commits: `feat(core-api): ...`, `fix(validation): ...`, `chore(infra): ...`.
-- Agent-generated commits include an `Agent-Session: <id>` trailer for traceability.
+- Agent-generated commits include an `Agent-Session: <id>` trailer for traceability. Human commits with relevant AI help include `AI-Assisted: <tool>`.
+- Every AI session is logged in `Documentation/evidence/ai-sessions.csv` in the same pull request (see `Documentation/evidence/README.md`).
 - Branches are named `feature/<issue>-<description>` from `main`. Merges happen only through pull requests with a green pipeline.
 - Pull request descriptions link the requirement or issue and state the relevant decision taken.
 

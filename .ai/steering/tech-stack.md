@@ -72,9 +72,9 @@ Each item has a status:
 
 ## AI tools and agents
 
-- **Claude Code / Codex** as agents — *In use* (see `Documentation/Requirements.md` §10). A `CLAUDE.md` (or `AGENTS.md`) holding conventions, constraints and verification commands — *Planned*.
+- **Claude Code / Codex / Claude app** as agents — *In use* (see `Documentation/Requirements.md` §10 and `Documentation/evidence/`). A root `CLAUDE.md` holding sources of truth, constraints and verification commands — *In use*.
 - **Hooks** that run lint and tests after every change — *Planned*.
-- **Agent session logs and metrics** kept in the repository (without secrets) under `Documentation/evidence/` — *Planned*; required for the "Measurement & Critical Analysis" criterion.
+- **Agent session logs and metrics** kept in the repository (without secrets) under `Documentation/evidence/` — *In use* since 2026-11-24 (`ai-sessions.csv`, `sessions/`, `ci/runs.csv` exported by `scripts/evidence/export-ci-runs.sh`). Required for the "Measurement & Critical Analysis" criterion.
 
 ## Rejected options
 

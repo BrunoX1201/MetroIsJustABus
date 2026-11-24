@@ -73,7 +73,7 @@ O PL6 (Parte 2) propõe comparar a especificação gerada a partir de uma descri
 
 | Campo | Registo |
 |---|---|
-| Ferramenta / modelo | Claude (Anthropic), Claude Opus 5.5, na app Claude com acesso ao repositório (só leitura no GitHub) e aos PDFs do projeto. |
+| Ferramenta / modelo | Claude (Anthropic), Claude Opus 5.5, na app Claude, com acesso aos PDFs do projeto e ao repositório (primeiro só leitura; depois push autorizado para o PR). Registo completo: `Documentation/evidence/sessions/2026-11-24-pl6-ticket-purchase.md`. |
 | Instrução representativa | "*Analisa todo o teu contexto… Verifica a integridade do projeto e coerência entre ficheiros. Faz ou indica os passos para realizar o PL6.*" Seguiram-se as escolhas da equipa: funcionalidade = compra de bilhete; *steering* segue o código; corrigir `streering`, docs e `product.md`. |
 | O que a IA produziu | Relatório de coerência do repositório; correções ao *steering*, ao README e aos `Requirements.md`; os rascunhos de `requirements.md`, `design.md`, `tasks.md` e `review.md`. |
 | Verificações executadas pela IA | `npm ci`, `npm run lint`, `typecheck`, `test` (6/6) e `build` no *commit* `6f49046`. `diff` do texto do enunciado v1.0 vs v1.1 (única diferença: a linha sobre os VMs do DEI). Confirmação das páginas citadas em S-1 a S-8 com `pdftotext`. |
