@@ -2,6 +2,8 @@
 
 Monorepositório para o projeto de Automated Software Engineering 2026/2027. A [especificação inicial](Documentation/Requirements.md) define os requisitos e a arquitetura proposta.
 
+O enunciado em vigor é a [versão 1.1](Automated_Software_Development_Project_Complete.v1.1.pdf). Os ficheiros de *steering* do SDD (PL5) estão em [`.ai/steering/`](.ai/steering/) e as especificações por funcionalidade (PL6/PL7) em [`.ai/sdd/specs/`](.ai/sdd/specs/).
+
 ## Estrutura
 
 | Pasta | Responsabilidade |
@@ -11,6 +13,9 @@ Monorepositório para o projeto de Automated Software Engineering 2026/2027. A [
 | `backend/validation-service/` | Entrada dos clientes de validação e comunicação com o Core |
 | `backend/notification-service/` | Subscrições, preferências e entrega de notificações |
 | `backend/infra/` | Inicialização dos recursos de desenvolvimento local |
+| `.ai/` | Contexto para agentes: *steering* do projeto e especificações SDD por funcionalidade |
+| `Documentation/evidence/` | Evidência do uso de IA e do pipeline (registo de sessões, exportação de execuções de CI) |
+| `CLAUDE.md` | Instruções de entrada para agentes de IA |
 
 Cada aplicação é um workspace npm com build próprio. O frontend fala com o Core por HTTP; o proxy de desenvolvimento envia `/api/*` para `http://127.0.0.1:3001/*`. Os serviços não partilham bases de dados. O PostgreSQL local contém três bases e três utilizadores separados. RabbitMQ está disponível para os eventos previstos na arquitetura.
 
@@ -40,7 +45,7 @@ Também se pode iniciar cada aplicação separadamente com `npm run dev:frontend
 
 ## Pipeline da Milestone 2
 
-O workflow [`.github/workflows/pipeline.yml`](.github/workflows/pipeline.yml) corre em `pull_request`, em pushes para `main` e manualmente com `workflow_dispatch`. Todos os jobs usam runners temporários do GitHub. A execução segue esta ordem:
+O workflow [`.github/workflows/pipeline.yml`](.github/workflows/pipeline.yml) corre em `pull_request`, em pushes para `main` e manualmente com `workflow_dispatch`. Os jobs de verificação e publicação usam runners temporários do GitHub; apenas `deploy-development` usa o runner self-hosted da VM de desenvolvimento. A execução segue esta ordem:
 
 | Job | Quando corre | O que faz |
 |---|---|---|
@@ -88,7 +93,7 @@ Preparação necessária na VM:
 
 O deploy usa `IMAGE_TAG=sha-<commit>` e `COMPOSE_PROJECT_NAME=metro-dev`, pelo que os volumes PostgreSQL e RabbitMQ se mantêm entre execuções. `scripts/deploy-development.sh` guarda a tag da última versão que passou no smoke test no diretório de estado do utilizador do runner. Se a atualização falhar, tenta restaurar essa versão e o job termina com erro. O token de acesso ao GHCR vem do `GITHUB_TOKEN` do job e a sessão Docker é terminada no fim. A password da VM não é guardada no repositório.
 
-**Estado atual:** o workflow e o script estão preparados, mas o runner ainda não foi instalado na VM. O deployment persistente só fica efetivo quando os passos acima estiverem concluídos.
+**Estado atual:** o runner self-hosted está ativo na VM de desenvolvimento e `DEV_RUNNER_READY=true`. O deployment para desenvolvimento correu com sucesso pela primeira vez a 17/11/2026 (execução `44117131119`, commit `6f49046`).
 
 O PostgreSQL está em `127.0.0.1:55432` e o RabbitMQ em `127.0.0.1:5672`; a interface de gestão do broker está em `http://127.0.0.1:15672` (`metro` / `metro_dev`). Os utilizadores e bases de desenvolvimento são `metro_core`, `metro_validation` e `metro_notifications`, com passwords `<nome>_dev` definidas em `backend/infra/postgres/init.sql`. Estas credenciais destinam-se apenas ao ambiente local.
 

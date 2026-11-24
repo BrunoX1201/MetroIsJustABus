@@ -1,5 +1,7 @@
 # Product: MetroIsJustABus
 
+> Revision 1.1 (2026-11-24): removed rules not stated in the project brief (ticket states, occupancy formula) and pointed to the open questions that govern them. Statements marked *(brief)* come from the official project statement v1.1.
+
 ## What it is
 
 MetroIsJustABus is a distributed system that operates an urban bus network. It has two main audiences:
@@ -15,7 +17,7 @@ This is an academic project. Its main goal is the engineering process (AI-assist
 - **Schedules**: define the trips planned per line and the expected times at each stop. They vary by day of the week and operational conditions.
 - **Trip**: a concrete execution of a schedule. Has a state (scheduled, delayed, cancelled, diverted), occupancy and capacity.
 - **Disruption**: affects a line, stop, trip or period. Reflected in passenger-facing information.
-- **Ticket**: has a type, price, validity period, conditions of use and number of permitted journeys. Has its own state (active, used up, expired).
+- **Ticket**: has a type, which may differ in price, validity period, conditions of use or number of permitted journeys (brief). A ticket has a current state that affects whether it is valid (brief); the concrete states, activation and expiry rules are not stated by the brief and remain open in Q-02 of `Documentation/Requirements.md`. Agents must not assume a state model until Q-02 is closed.
 - **Validation**: a record of a ticket being used. Only accepted if the ticket is valid for that use at the time it is made.
 - **Subscription and notification**: a passenger subscribes to relevant entities; when something changes, the system determines who is affected and notifies them.
 
@@ -36,7 +38,7 @@ When performance and correctness conflict for tickets and validations, correctne
 - **No real payments.** Ticket purchase records the transaction but does not integrate with payment gateways (Stripe, SIBS, MB Way, etc.). Any payment field is simulated.
 - **No native app.** Only the responsive web application. No iOS, Android, offline PWA or native push.
 - **No integration with real ticketing systems or turnstiles.** Validation happens through the API or a simulated validator interface.
-- **No real-time GPS tracking.** Occupancy is derived from validations and staff-registered load, not from vehicle location.
+- **No real-time GPS tracking.** Occupancy is not derived from vehicle location. How it is estimated (validations, staff-registered load) is a team proposal still open in Q-03.
 - **No multi-operator, multi-city or multi-language support.** One network, one operator. Interface in Portuguese.
 - **No social features** (comments, line ratings, sharing).
 - **No multimodal route planning** (combining with train, metro, bicycle). Only line and trip consultation.

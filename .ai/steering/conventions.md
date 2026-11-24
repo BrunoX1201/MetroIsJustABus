@@ -2,50 +2,49 @@
 
 Patterns that go beyond the linter. When a convention does not cover a case, follow the closest existing example in the codebase and record the decision in an ADR.
 
+> Revision 1.1 (2026-11-24): repository layout and framework-specific rules aligned with the code that exists after Milestone 2 (npm workspaces, Express 5, `node:test`). Folders marked *(planned)* do not exist yet and are created by the first task that needs them.
+
 ## Monorepo structure
 
 ```
-apps/
-  passenger-web/        # React SPA (passengers and staff)
-services/
-  core-api/             # main domain
-  validation-service/
-  notification-service/
-packages/
-  contracts/            # OpenAPI and event schemas, source of truth
-  shared-types/         # types generated from contracts
-  test-utils/
-infra/
-  terraform/
-  compose/
-  traefik/
-docs/
-  adr/                  # architectural decisions
-  requirements/
-  evidence/             # agent logs and metrics
+.ai/
+  steering/             # product, tech-stack, conventions, principles (PL5)
+  sdd/specs/<feature>/  # requirements, design, tasks, review, validation (PL6/PL7)
+frontend/               # React SPA (passengers and staff), served by Nginx
+backend/
+  core-api/             # main domain (network, tickets, validation decision)
+  validation-service/   # entry point for validators, calls core-api
+  notification-service/ # subscriptions, preferences, delivery
+  contracts/            # (planned) OpenAPI and event schemas, source of truth
+  infra/postgres/       # local database bootstrap
+scripts/                # dev runner, smoke test, release manifest, deploy
+.github/workflows/      # CI/CD pipeline
+Documentation/
+  Requirements.md       # project-wide requirements (source of FR/NFR/A/Q/D IDs)
+  adr/                  # (planned) architectural decisions
+  evidence/             # AI session log, session records, CI run exports
 ```
 
-Each service follows the same internal structure:
+Each backend is an npm workspace with the same internal structure. Existing code (`src/app.ts`, `src/index.ts`) is the composition root; domain code goes into modules:
 
 ```
 src/
+  app.ts                # builds the Express app, mounts module routers
+  index.ts              # reads configuration, starts the server
   modules/<domain>/
-    <domain>.controller.ts
-    <domain>.service.ts
-    <domain>.repository.ts
-    dto/
-    events/
-  infra/                # database, RabbitMQ, HTTP clients
-  main.ts
+    <domain>.routes.ts       # Express router: input validation, auth, response mapping
+    <domain>.service.ts      # domain rules
+    <domain>.repository.ts   # only place that talks to the database
+    <domain>.schemas.ts      # request/response schemas
+  infra/                # database pool, RabbitMQ, HTTP clients
+  *.test.ts             # unit tests next to the code
 test/
-  unit/
-  integration/
-  contract/
+  integration/          # (planned) real Postgres/RabbitMQ
 ```
 
 ## HTTP routes
 
-- Versioned prefix is mandatory: `/api/v1/...`.
+- Versioned prefix is mandatory: `/api/v1/...` as seen by clients. The Nginx (`frontend/nginx.conf`) and Vite proxies strip `/api`, so each backend mounts its routers under `/v1/...` (for example, core-api serves `POST /v1/ticket-purchases`, reached by the browser as `POST /api/v1/ticket-purchases`). Operational endpoints (`/health`) are not versioned.
 - Resources are plural, lowercase, hyphenated: `/api/v1/bus-lines/{lineId}/stops`.
 - HTTP verbs carry their semantic meaning. Actions that do not fit CRUD use a sub-resource with a verb at the end: `POST /api/v1/tickets/{ticketId}/cancel`.
 - Idempotent operations that create resources (ticket purchase, validation) require the `Idempotency-Key` header. Without it, the request is rejected with `400`.
@@ -53,12 +52,12 @@ test/
 - Dates are ISO 8601 with `Z`. Monetary values are integer cents with an explicit `currency` field.
 - Identifiers are UUID v7.
 
-## Controllers and services
+## Routes, services and repositories
 
-- The controller only validates input, checks authorization, calls the service and maps the response. It contains no business rules.
+- The route handler only validates input, checks authorization, calls the service and maps the response. It contains no business rules.
 - The service contains domain rules and orchestrates repositories and event publishing.
 - The repository is the only place that talks to the database.
-- No controller directly imports another module's repository. Cross-module communication goes through the exported service.
+- No route handler directly imports another module's repository. Cross-module communication goes through the exported service.
 
 ## Errors
 
@@ -83,8 +82,8 @@ All error responses follow Problem Details (RFC 9457):
 ## Authentication and authorization
 
 - JWT issued by core-api, short validity (15 min), rotating refresh tokens.
-- The token is validated at each service boundary by a shared guard from `packages/shared-types`. No service implements its own validation.
-- Roles: `passenger` and `staff` (with sub-roles `operator` and `admin`). Roles are checked with an explicit decorator: `@Roles('staff')`. Routes without a role decorator are rejected by default, not accepted.
+- The token is validated at each service boundary by a shared Express middleware (location to be decided when authentication is implemented; see Q-09 in `Documentation/Requirements.md`). No service implements its own token validation logic.
+- Roles: `passenger` and `staff` (with sub-roles `operator` and `admin`). Roles are checked with an explicit middleware on each router: `requireRole('staff')`. Routes without an explicit role or an explicit `public()` marker are rejected by default, not accepted. Sub-roles `operator`/`admin` are a proposal pending Q-09.
 - Internal services (validation-service and notification-service) accept calls from core-api using a service token, distinct from user tokens.
 - User identifiers from the request body are never trusted. `userId` is always extracted from the token.
 
@@ -114,7 +113,8 @@ All error responses follow Problem Details (RFC 9457):
 ## Commits and branches
 
 - Conventional Commits: `feat(core-api): ...`, `fix(validation): ...`, `chore(infra): ...`.
-- Agent-generated commits include an `Agent-Session: <id>` trailer for traceability.
+- Agent-generated commits include an `Agent-Session: <id>` trailer for traceability. Human commits with relevant AI help include `AI-Assisted: <tool>`.
+- Every AI session is logged in `Documentation/evidence/ai-sessions.csv` in the same pull request (see `Documentation/evidence/README.md`).
 - Branches are named `feature/<issue>-<description>` from `main`. Merges happen only through pull requests with a green pipeline.
 - Pull request descriptions link the requirement or issue and state the relevant decision taken.
 

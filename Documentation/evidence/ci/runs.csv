@@ -1,0 +1,12 @@
+run_id,created_at,updated_at,duration_s,event,branch,head_sha,status,conclusion,title
+44117131119,"2026-11-17T15:41:01Z","2026-11-17T15:44:47Z",226,"push","main","6f49046","completed","success","Test frontend at configured development bind address"
+44115499715,"2026-11-17T15:32:29Z","2026-11-17T15:36:10Z",221,"workflow_dispatch","main","5505a2a","completed","failure","CI and deployable images"
+44107225473,"2026-11-17T14:48:50Z","2026-11-17T15:03:56Z",906,"push","main","5505a2a","completed","success","Fix runner temp configuration in deployment job"
+44106859660,"2026-11-17T14:46:51Z","2026-11-17T14:46:51Z",0,"push","main","4b5de28","completed","failure","Add development VM deployment pipeline"
+43960279107,"2026-11-16T21:27:28Z","2026-11-16T21:30:11Z",163,"workflow_dispatch","main","e4ec363","completed","success","CI and deployable images"
+43878604114,"2026-11-16T13:43:59Z","2026-11-16T13:47:14Z",195,"push","main","e4ec363","completed","success","docs: explain pipeline and add frontend demo"
+43457760831,"2026-11-13T15:57:16Z","2026-11-13T16:00:31Z",195,"push","main","f6cbce5","completed","success","pipeline test"
+43456574520,"2026-11-13T15:50:09Z","2026-11-13T15:54:33Z",264,"push","main","d7a319d","completed","success","Optimize container CI workflow"
+43210556219,"2026-11-12T11:36:07Z","2026-11-12T16:19:29Z",17002,"workflow_dispatch","main","13b9b3c","completed","success","CI and deployable images"
+43198680344,"2026-11-12T10:15:05Z","2026-11-12T16:13:23Z",21498,"workflow_dispatch","main","13b9b3c","completed","success","CI and deployable images"
+42844580533,"2026-11-10T15:27:54Z","2026-11-10T15:27:54Z",0,"push","main","13b9b3c","completed","startup_failure","Add CI pipeline and container deployment"

@@ -11,7 +11,7 @@
 
 **Entrega:** Milestone 1 — Requirements, 27 de outubro de 2026 (5%)
 
-**Referência:** enunciado v1.0 de 29 de setembro de 2026
+**Referência:** enunciado v1.0 de 29 de setembro de 2026 (Milestone 1). Revisto face ao enunciado v1.1 de 17 de novembro de 2026: a única alteração é a indicação de que os VMs podem ser pedidos ao DEI Helpdesk (secção Deployment and Infrastructure, p. 10); nenhum requisito, pressuposto ou paginação aqui citados é afetado.
 
 ## 1. Objetivo e âmbito
 
@@ -225,7 +225,7 @@ Contratos HTTP devem documentar método, caminho, esquema JSON, respostas de suc
 ### 9.2. Modelo e invariantes mínimos
 
 | Entidade/estado | Campos ou regra necessários | Origem |
-|---|---|
+|---|---|---|
 | Linha, paragem e viagem | Linha tem sequência ordenada de paragens; viagem referencia versão de horário e passagens previstas. | FR-1 a FR-3; D-05 |
 | Perturbação | ID, tipo, alvos, início/fim, estado e versão. Atraso inclui desfasamento temporal; cancelamento identifica serviços/passagens anulados; desvio identifica paragens substituídas e percurso alternativo quando definido em Q-05. | FR-4/6/7/8; Q-05 |
 | Tipo de bilhete e título | Tipo tem versão de preço/validade/viagens; título guarda a versão adquirida. Alterar o catálogo não muda direitos já emitidos. | FR-9/10; NFR-7 |
